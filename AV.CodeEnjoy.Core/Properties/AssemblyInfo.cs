@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AV.CodeEnjoy.Core")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyDescription("Code Enjoy client for .net based on websockets.")]
+[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyCompany("Anton Volodko")]
 [assembly: AssemblyProduct("AV.CodeEnjoy.Core")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("Anton Volodko")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5969d5aa-d689-4b2d-88ff-d0dd3ae4ac17")]
+[assembly: Guid("0466e8b1-403a-416b-be31-d92dc42cf24e")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,3 +34,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.9.0.0")]
 [assembly: AssemblyFileVersion("0.9.0.0")]
+[assembly: AssemblyInformationalVersion("0.9.0")]

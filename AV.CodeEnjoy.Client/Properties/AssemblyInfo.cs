@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AV.CodeEnjoy.Client")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("AV.CodeEnjoy.TetrisClient")]
+[assembly: AssemblyDescription("The code example. Which help setup console application to use the code enjoy tetris game.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AV.CodeEnjoy.Client")]
+[assembly: AssemblyCompany("Anton Volodko")]
+[assembly: AssemblyProduct("AV.CodeEnjoy.TetrisClient")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("Anton Volodko")]
 [assembly: AssemblyCulture("")]
@@ -34,3 +34,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.9.0.0")]
 [assembly: AssemblyFileVersion("0.9.0.0")]
+[assembly: AssemblyInformationalVersion("0.9.0")]
+

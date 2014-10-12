@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AV.CodeEnjoy.Client</RootNamespace>
-    <AssemblyName>AV.CodeEnjoy.Client</AssemblyName>
+    <AssemblyName>AV.CodeEnjoy.TetrisClient</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
