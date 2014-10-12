@@ -1,25 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AV.CodeEnjoy.Tetris.Core;
 
 namespace AV.CodeEnjoy.Client
 {
   class TetrisConsoleVisualizer
   {
+    private readonly KeysSequence _keys;
+
+    public TetrisConsoleVisualizer(KeysSequence keys)
+    {
+      _keys = keys;
+    }
+
     public void Visualize(Game game)
     {
+      while (_keys.Count != 0)
+      {
+        var key = _keys.Dequeue();
+       
+        switch (key)
+        {
+          case ConsoleKey.LeftArrow:
+            game.Figure.MoveHorizontaly(-1);
+            break;
+          case ConsoleKey.RightArrow:
+            game.Figure.MoveHorizontaly(+1);
+            break;
+          case ConsoleKey.DownArrow:
+            game.Figure.Drop();
+            break;
+          case ConsoleKey.Spacebar:
+            game.Figure.Rotate(1);
+            break;
+        }
+      }
       Console.CursorTop = 2;
 
       VisualizeGlass(0,  game.Glass);
-      
+
+      Console.WriteLine();
+
+      Console.WriteLine("Actions: {0}                                                                            ", 
+        game.Figure.GetRecordedManipulations());
             
       Console.CursorTop = 2;
       VisualizeFigure(3 /* count of symbols used for drawing glass countours*/, 
                       game.Glass, game.Figure);
+
     }
 
     private static void VisualizeGlass(int startPoint, Glass field)

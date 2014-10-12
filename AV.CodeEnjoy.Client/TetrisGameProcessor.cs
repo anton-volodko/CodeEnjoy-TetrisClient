@@ -12,7 +12,7 @@ namespace AV.CodeEnjoy.Client
     /// Down Arrow: to drop the figure 
     /// Spacebar - for the figure Rotation
     /// </summary>
-    private TetrisConsoleVisualizer _consoleVisualizer = new TetrisConsoleVisualizer();
+    private TetrisConsoleVisualizer _consoleVisualizer = new TetrisConsoleVisualizer(KeysSequence.Instance);
 
     public void ProcessTick(Game game)
     {

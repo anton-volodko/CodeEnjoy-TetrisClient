@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AV.CodeEnjoy.Core;
 using AV.CodeEnjoy.Tetris.Core;
@@ -39,8 +40,17 @@ namespace AV.CodeEnjoy.Client
       {
         _connector.Start();
 
-        Console.WriteLine("Please, press 'Enter' to exit...");
-        Console.ReadLine();
+        Console.WriteLine("Press ESC to stop");
+        do
+        {
+          while (!Console.KeyAvailable)
+          {
+            Thread.Sleep(250);
+          }
+          var key = Console.ReadKey(true);
+          if (key.Key == ConsoleKey.Escape) break;
+          KeysSequence.Instance.Enqueue(key.Key);
+        } while (true);
       }
       finally 
       {        
