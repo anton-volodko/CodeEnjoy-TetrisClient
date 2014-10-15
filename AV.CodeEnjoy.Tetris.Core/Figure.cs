@@ -28,8 +28,9 @@ namespace AV.CodeEnjoy.Tetris.Core
       /// </summary>
       private bool _isDroped = false;
  
-      private readonly List<Matrix> _figure = new List<Matrix>();
- 
+      private readonly List<Point[]> _figure = new List<Point[]>();
+      private Matrix _rotationMatrix = new Matrix(); 
+
       public Point Location { get; private set; }
       public FigureType Type { get; private set; }
 
@@ -37,6 +38,7 @@ namespace AV.CodeEnjoy.Tetris.Core
       {
         Location = location;
         InitFigure(type);
+        _rotationMatrix.RotateAt(90, Location);
       }
 
       public string GetRecordedManipulations()
@@ -70,51 +72,48 @@ namespace AV.CodeEnjoy.Tetris.Core
         {
           case FigureType.Line:
             _figure.AddRange(new [] { 
-              new Matrix(Location.Y - 1, Location.X, 
-                         Location.Y + 2, Location.X, 0, 0) });
+              new [] { new Point(Location.X, Location.Y - 1), new Point(Location.X, Location.Y + 2) } });
             break;
           case FigureType.Square:
             _figure.AddRange(new []
             {
-              new Matrix(Location.Y, Location.X, 
-                         Location.Y, Location.X + 1, 0, 0),
-              new Matrix(Location.Y + 1, Location.X, 
-                         Location.Y + 1, Location.X + 1, 0, 0)
+              new [] { new Point(Location.X, Location.Y), new Point(Location.X + 1, Location.Y) },
+              new [] { new Point(Location.X, Location.Y + 1), new Point(Location.X + 1, Location.Y + 1) }
             });
             break;
           case FigureType.L:
             _figure.AddRange(new []
             {
-              new Matrix(Location.Y - 1, Location.X, Location.Y + 1, Location.X , 0, 0),
-              new Matrix(Location.Y + 1, Location.X, Location.Y + 1, Location.X + 1, 0, 0)
+              new [] { new Point(Location.X, Location.Y - 1), new Point(Location.X , Location.Y + 1) },
+              new [] { new Point(Location.X, Location.Y + 1), new Point(Location.X + 1, Location.Y + 1) }
             });
             break;
           case FigureType.J:
             _figure.AddRange(new []
             {
-              new Matrix(Location.Y - 1, Location.X + 1, Location.Y + 1, Location.X + 1, 0, 0),
-              new Matrix(Location.Y + 1, Location.X, Location.Y + 1, Location.X + 1, 0, 0)
+              new [] { new Point(Location.X + 1, Location.Y - 1), new Point(Location.X + 1, Location.Y + 1) },
+              new [] { new Point(Location.X, Location.Y + 1), new Point(Location.X + 1, Location.Y + 1) }
             });
             break;
           case FigureType.S:
             _figure.AddRange(new []
             {
-              new Matrix(Location.Y - 1, Location.X, Location.Y - 1, Location.X + 1, 0, 0),
-              new Matrix(Location.Y, Location.X - 1, Location.Y, Location.X, 0, 0)
+              new [] { new Point(Location.X, Location.Y - 1), new Point(Location.X + 1, Location.Y - 1)},
+              new [] { new Point(Location.X - 1, Location.Y), new Point(Location.X, Location.Y)}
             });
             break;
           case FigureType.Z:
             _figure.AddRange(new []
             {
-              new Matrix(Location.Y - 1, Location.X - 1, Location.Y - 1, Location.X, 0, 0),
-              new Matrix(Location.Y, Location.X, Location.Y, Location.X + 1, 0, 0)
+              new [] { new Point(Location.X - 1, Location.Y - 1), new Point(Location.X, Location.Y - 1)},
+              new [] { new Point(Location.X, Location.Y), new Point(Location.X + 1, Location.Y)}
             });
             break;
           case FigureType.T:
             _figure.AddRange(new []
             {
-              new Matrix(Location.Y - 1, Location.X, Location.Y, Location.X, 0, 0),
-              new Matrix(Location.Y, Location.X - 1, Location.Y, Location.X + 1, 0, 0)
+              new [] { new Point(Location.X, Location.Y - 1), new Point(Location.X, Location.Y) },
+              new [] { new Point(Location.X - 1, Location.Y), new Point(Location.X + 1, Location.Y)}
             });
             break;
         }
@@ -144,14 +143,9 @@ namespace AV.CodeEnjoy.Tetris.Core
         return GetPoints().Select(p => p.X);
       }
 
-      private IEnumerable<Point> ToPoints(Matrix m)
-      {
-        return new[] { new Point((int)m.Elements[1], (int)m.Elements[0]), new Point((int)m.Elements[3], (int)m.Elements[2]) };
-      }
-
       public IEnumerable<Point> GetPoints()
       {
-        return _figure.SelectMany(ToPoints);
+        return _figure.SelectMany(l => l);
       }
 
       /// <summary>
@@ -166,14 +160,14 @@ namespace AV.CodeEnjoy.Tetris.Core
         var figureMask = new Mask(TopLeftPoint, fieldSize);
         foreach (var line in _figure)
         {
-          var points = ToPoints(line).OrderBy(p => p.X + p.Y).ToArray(); // will return only 2 points
+          var points = line.OrderBy(p => p.X + p.Y).ToArray(); // will return only 2 points
           if (points[0].X == points[1].X)
           {
             var column = points[0].X - TopLeftPoint.X;
             var row = 0;
             for (int index = points[0].Y; index <= points[1].Y; index++)
             {
-              figureMask[column, row] = true;
+              figureMask[row, column] = true;
               row++;
             }
           }
@@ -183,7 +177,7 @@ namespace AV.CodeEnjoy.Tetris.Core
             var column = 0;
             for (int index = points[0].X; index <= points[1].X; index++)
             {
-              figureMask[column, row] = true;
+              figureMask[row, column] = true;
               column++;
             }
           }
@@ -191,25 +185,25 @@ namespace AV.CodeEnjoy.Tetris.Core
         return figureMask;
       }
 
-      /// <summary>
-      /// Rotate figure clockwise 90 degrees N times
-      /// </summary>
-      public Figure Rotate(int nTimes)
-      {
-        nTimes %= 4;
-        // rotate
-        foreach (var line in _figure)
+        /// <summary>
+        /// Rotate figure clockwise 90 degrees N times
+        /// </summary>
+        public Figure Rotate(int nTimes)
         {
-          line.RotateAt(90 * nTimes, Location);
+            nTimes %= 4;
+            // rotate
+            foreach (var line in _figure)
+            {
+                _rotationMatrix.TransformPoints(line);
+            }
+
+            // register rotation
+            _rotate += nTimes;
+            _rotate %= 4;
+            return this;
         }
 
-        // register rotation
-        _rotate += nTimes;
-        _rotate %= 4;
-        return this;
-      }
-
-      /// <summary>
+        /// <summary>
       /// Mark figure as dropped
       /// </summary>
       public void Drop()
@@ -229,7 +223,7 @@ namespace AV.CodeEnjoy.Tetris.Core
 
         foreach (var line in _figure)
         {
-          line.Translate(offset, 0);
+            _rotationMatrix.TransformPoints(line);
         }
         Location = new Point(Location.X + offset, Location.Y);
         return this;
